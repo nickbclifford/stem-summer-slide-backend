@@ -1,4 +1,5 @@
-import { AutoIncrement, Column, DataType, Model, PrimaryKey, Table } from 'sequelize-typescript';
+import { AutoIncrement, Column, DataType, HasMany, Model, PrimaryKey, Table } from 'sequelize-typescript';
+import Answer from './Answer';
 
 export enum QuestionType {
 	SCIENCE = 'Science',
@@ -20,7 +21,13 @@ export default class Question extends Model<Question> {
 	@Column(DataType.ENUM(Object.values(QuestionType)))
 	type!: QuestionType;
 
+	@Column
+	unit!: number;
+
 	// Only present on math/numerical questions
 	@Column
-	answer!: number | null;
+	correctAnswer!: number | null;
+
+	@HasMany(() => Answer)
+	answers!: Answer[];
 }
