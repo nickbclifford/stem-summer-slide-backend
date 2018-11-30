@@ -1,11 +1,27 @@
-import { AutoIncrement, Column, DataType, HasMany, Model, PrimaryKey, Table } from 'sequelize-typescript';
+import {
+	AutoIncrement,
+	Column,
+	DataType,
+	ForeignKey,
+	HasMany,
+	Model,
+	PrimaryKey,
+	Table
+} from 'sequelize-typescript';
 import Answer from './Answer';
+import Unit from './Unit';
 
 export enum QuestionType {
-	SCIENCE = 'Science',
-	TECHNOLOGY = 'Technology',
-	ENGINEERING = 'Engineering',
-	MATHEMATICS = 'Mathematics'
+	SCIENCE = 'science',
+	TECHNOLOGY = 'technology',
+	ENGINEERING = 'engineering',
+	MATHEMATICS = 'mathematics'
+}
+
+export enum AnswerFormat {
+	TEXT = 'text',
+	IMAGE = 'image',
+	NUMERICAL = 'numerical'
 }
 
 @Table
@@ -15,17 +31,21 @@ export default class Question extends Model<Question> {
 	@Column
 	id!: number;
 
-	@Column
+	@Column(DataType.TEXT)
 	body!: string;
 
 	@Column(DataType.ENUM(Object.values(QuestionType)))
-	type!: QuestionType;
+	questionType!: QuestionType;
 
+	@Column(DataType.ENUM(Object.values(AnswerFormat)))
+	answerFormat!: AnswerFormat;
+
+	@ForeignKey(() => Unit)
 	@Column
-	unit!: number;
+	unitId!: number;
 
 	// Only present on math/numerical questions
-	@Column
+	@Column(DataType.DOUBLE)
 	correctAnswer!: number | null;
 
 	@HasMany(() => Answer)

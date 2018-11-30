@@ -1,25 +1,27 @@
 // Basic configuration
 import { Sequelize } from 'sequelize-typescript';
-
-const port = 2400;
+import config from './config';
 
 // Initialize Sequelize
-// TODO: config.ts?
 const sequelize = new Sequelize({
-	database: '',
-	username: '',
-	password: '',
+	dialect: 'postgres',
+	url: config.postgresURL,
 	modelPaths: [__dirname + '/models']
 });
 
-// Initialize Express
 import express from 'express';
-const app = express();
 
-app.get('/', (req, res) => {
-	res.json({ hello: 'world!' });
-});
+sequelize.sync({ force: true }).then(() => {
+	console.log('models synced!');
 
-app.listen(port, () => {
-	console.log(`Server listening on *:${port}`);
+	// Initialize Express
+	const app = express();
+
+	app.get('/', (req, res) => {
+		res.json({ hello: 'world!' });
+	});
+
+	app.listen(config.port, () => {
+		console.log(`Server listening on *:${config.port}`);
+	});
 });

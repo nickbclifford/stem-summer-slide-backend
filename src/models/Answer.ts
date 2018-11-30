@@ -1,4 +1,13 @@
-import { AutoIncrement, BelongsTo, Column, ForeignKey, Model, PrimaryKey, Table } from 'sequelize-typescript';
+import {
+	AutoIncrement,
+	BelongsTo,
+	Column,
+	DataType,
+	ForeignKey,
+	Model,
+	PrimaryKey,
+	Table
+} from 'sequelize-typescript';
 import Question from './Question';
 import User from './User';
 
@@ -10,7 +19,7 @@ export default class Answer extends Model<Answer> {
 	id!: number;
 
 	// If it's an image submission, this is a URL
-	@Column
+	@Column(DataType.TEXT)
 	content!: string;
 
 	@ForeignKey(() => User)
