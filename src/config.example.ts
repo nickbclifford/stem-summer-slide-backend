@@ -1,4 +1,10 @@
 export default {
 	port: 2400,
-	postgresURL: ''
+	postgres: {
+		host: 'localhost',
+		port: 5432,
+		name: 'stem-summer-slide',
+		username: '',
+		password: ''
+	}
 };

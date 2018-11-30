@@ -5,7 +5,7 @@ import config from './config';
 // Initialize Sequelize
 const sequelize = new Sequelize({
 	dialect: 'postgres',
-	url: config.postgresURL,
+	...config.postgres,
 	modelPaths: [__dirname + '/models']
 });
 
