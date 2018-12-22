@@ -9,7 +9,11 @@ const sequelize = new Sequelize({
 	modelPaths: [__dirname + '/models']
 });
 
+import { json } from 'body-parser';
 import express from 'express';
+
+// Routers
+import userRouter from './routes/user';
 
 sequelize.sync({ force: true }).then(() => {
 	console.log('models synced!');
@@ -17,9 +21,15 @@ sequelize.sync({ force: true }).then(() => {
 	// Initialize Express
 	const app = express();
 
+	// Middleware
+	app.use(json());
+
+	// Route handlers
 	app.get('/', (req, res) => {
 		res.json({ hello: 'world!' });
 	});
+
+	app.use('/user', userRouter);
 
 	app.listen(config.port, () => {
 		console.log(`Server listening on *:${config.port}`);

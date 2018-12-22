@@ -1,4 +1,12 @@
-import { AutoIncrement, Column, HasMany, Model, PrimaryKey, Table } from 'sequelize-typescript';
+import {
+	AutoIncrement,
+	Column,
+	HasMany,
+	IsEmail,
+	Model,
+	PrimaryKey,
+	Table
+} from 'sequelize-typescript';
 import Answer from './Answer';
 
 @Table
@@ -10,6 +18,13 @@ export default class User extends Model<User> {
 
 	@Column
 	admin!: boolean;
+
+	@IsEmail
+	@Column
+	email!: string;
+
+	@Column
+	password!: string;
 
 	@HasMany(() => Answer)
 	answers!: Answer[];
