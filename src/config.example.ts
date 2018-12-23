@@ -6,5 +6,6 @@ export default {
 		name: 'stem-summer-slide',
 		username: '',
 		password: ''
-	}
+	},
+	forceSync: false
 };

@@ -26,6 +26,15 @@ export default class User extends Model<User> {
 	@Column
 	password!: string;
 
+	@Column
+	confirmationHash!: string;
+
+	@Column
+	confirmed!: boolean;
+
+	@Column
+	name!: string;
+
 	@HasMany(() => Answer)
 	answers!: Answer[];
 }
