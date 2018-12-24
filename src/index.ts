@@ -19,7 +19,7 @@ import { errorHandler } from './utils/middleware';
 // Routers
 import userRouter from './routes/user';
 
-sequelize.sync({ force: config.forceSync }).then(() => {
+sequelize.sync({ force: config.forceModelSync }).then(() => {
 	console.log('models synced!');
 
 	// Initialize Express

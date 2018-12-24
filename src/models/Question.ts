@@ -1,5 +1,5 @@
 import {
-	AutoIncrement,
+	AutoIncrement, BelongsTo,
 	Column,
 	DataType,
 	ForeignKey,
@@ -44,9 +44,15 @@ export default class Question extends Model<Question> {
 	@Column
 	unitId!: number;
 
+	@BelongsTo(() => Unit)
+	unit!: Unit;
+
 	// Only present on math/numerical questions
 	@Column(DataType.DOUBLE)
 	correctAnswer!: number | null;
+
+	@Column
+	maxPoints!: number;
 
 	@HasMany(() => Answer)
 	answers!: Answer[];

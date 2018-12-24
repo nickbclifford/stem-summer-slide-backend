@@ -22,6 +22,9 @@ export default class Answer extends Model<Answer> {
 	@Column(DataType.TEXT)
 	content!: string;
 
+	@Column
+	points!: number;
+
 	@ForeignKey(() => User)
 	@Column
 	userId!: number;

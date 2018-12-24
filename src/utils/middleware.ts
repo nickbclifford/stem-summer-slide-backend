@@ -8,6 +8,7 @@ export function asyncHandler(route: RequestHandler): RequestHandler {
 	};
 }
 
+// It needs to be declared with 4 arguments otherwise Express doesn't recognize it as an error handler
 // noinspection JSUnusedLocalSymbols
 export const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
 	if (!(err instanceof APIError)) { err = new InternalError(); }

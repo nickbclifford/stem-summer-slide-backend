@@ -7,5 +7,14 @@ export default {
 		username: '',
 		password: ''
 	},
-	forceSync: false
+	forceModelSync: false,
+	mail: {
+		host: '',
+		port: 587,
+		secure: false,
+		auth: {
+			user: '',
+			password: ''
+		}
+	}
 };

@@ -1,7 +1,9 @@
 import * as bcrypt from 'bcrypt';
 import * as crypto from 'crypto';
 import { Router } from 'express';
+import * as nodemailer from 'nodemailer';
 import { promisify } from 'util';
+import config from '../config';
 import User from '../models/User';
 import { APIError, InvalidParameterError, NotFoundError } from '../utils/errors';
 import { asyncHandler } from '../utils/middleware';
@@ -33,7 +35,15 @@ router.post('/register', asyncHandler(async (req, res) => {
 	});
 	await newUser.save();
 
-	// TODO: Send out confirmation email
+	// Send out confirmation email
+	// TODO: Create proper email, fill out fields
+	const transport = nodemailer.createTransport(config.mail);
+	await transport.sendMail({
+		from: '',
+		to: newUser.email,
+		subject: 'STEM Summer Slide - Confirm Email',
+		html: ''
+	});
 
 	success(res);
 }));
