@@ -5,7 +5,7 @@ import {
 	IsEmail,
 	Model,
 	PrimaryKey,
-	Table
+	Table, Unique
 } from 'sequelize-typescript';
 import Answer from './Answer';
 
@@ -20,6 +20,7 @@ export default class User extends Model<User> {
 	admin!: boolean;
 
 	@IsEmail
+	@Unique
 	@Column
 	email!: string;
 

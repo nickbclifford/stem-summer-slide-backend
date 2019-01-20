@@ -10,6 +10,12 @@ export class InvalidParameterError extends APIError {
 	}
 }
 
+export class UnauthorizedError extends APIError {
+	constructor() {
+		super('You are not authorized to access this route.', 401);
+	}
+}
+
 export class NotFoundError extends APIError {
 	constructor(objectName: string) {
 		super(`${objectName} not found.`, 404);
