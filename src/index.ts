@@ -18,6 +18,8 @@ import { errorHandler, jwtHandler } from './utils/middleware';
 
 // Routers
 import authRouter from './routes/auth';
+import questionRouter from './routes/question';
+import userRouter from './routes/user';
 
 sequelize.sync({ force: config.forceModelSync }).then(() => {
 	console.log('models synced!');
@@ -30,7 +32,9 @@ sequelize.sync({ force: config.forceModelSync }).then(() => {
 	app.use(jwtHandler);
 
 	// Child routers
-	app.use('/user', authRouter);
+	app.use('/auth', authRouter);
+	app.use('/question', questionRouter);
+	app.use('/user', userRouter);
 
 	// Error handler
 	app.use(errorHandler);

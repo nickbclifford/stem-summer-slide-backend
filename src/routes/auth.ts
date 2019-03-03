@@ -14,22 +14,25 @@ import { isNonEmptyString } from '../utils/validators';
 const router = Router();
 
 router.post('/register', asyncHandler(async (req, res) => {
-	if (!isNonEmptyString(req.body.name))     { throw new InvalidParameterError('name');     }
-	if (!isNonEmptyString(req.body.email))    { throw new InvalidParameterError('email');    }
-	if (!isNonEmptyString(req.body.password)) { throw new InvalidParameterError('password'); }
+	const name = req.body.name;
+	if (!isNonEmptyString(name)) { throw new InvalidParameterError('name'); }
+	const email = req.body.email;
+	if (!isNonEmptyString(email)) { throw new InvalidParameterError('email'); }
+	const password = req.body.password;
+	if (!isNonEmptyString(password)) { throw new InvalidParameterError('password'); }
 
 	// Generate confirmation hash
 	const buffer = await promisify(crypto.randomBytes)(20);
 	const confirmationHash = buffer.toString('hex');
 
 	// Generate password hash
-	const passwordHash = await bcrypt.hash(req.body.password, 10);
+	const passwordHash = await bcrypt.hash(password, 10);
 
 	// Insert user
 	const newUser = new User({
 		admin: false,
-		name: req.body.name,
-		email: req.body.email,
+		name,
+		email,
 		password: passwordHash,
 		confirmed: false,
 		confirmationHash
@@ -50,15 +53,17 @@ router.post('/register', asyncHandler(async (req, res) => {
 }));
 
 router.post('/confirm', asyncHandler(async (req, res) => {
-	if (typeof req.body.user !== 'number') { throw new InvalidParameterError('user');              }
-	if (!isNonEmptyString(req.body.hash))  { throw new InvalidParameterError('confirmation hash'); }
+	const userId = req.body.user;
+	if (typeof userId !== 'number') { throw new InvalidParameterError('user ID'); }
+	const hash = req.body.hash;
+	if (!isNonEmptyString(hash)) { throw new InvalidParameterError('confirmation hash'); }
 
 	// Get user
-	const user = await User.findById(parseInt(req.body.user, 10));
+	const user = await User.findById(userId);
 	if (user === null) { throw new NotFoundError('User'); }
 
 	// Check if hashes match
-	if (user.confirmationHash !== req.body.hash) { throw new APIError('Confirmation hashes don\'t match.', 400); }
+	if (user.confirmationHash !== hash) { throw new APIError('Confirmation hashes don\'t match.', 400); }
 
 	user.confirmed = true;
 	await user.save();
@@ -67,15 +72,17 @@ router.post('/confirm', asyncHandler(async (req, res) => {
 }));
 
 router.post('/login', asyncHandler(async (req, res) => {
-	if (!isNonEmptyString(req.body.email)) 	  { throw new InvalidParameterError('email');    }
-	if (!isNonEmptyString(req.body.password)) { throw new InvalidParameterError('password'); }
+	const email = req.body.email;
+	if (!isNonEmptyString(email)) { throw new InvalidParameterError('email'); }
+	const password = req.body.password;
+	if (!isNonEmptyString(password)) { throw new InvalidParameterError('password'); }
 
 	// Find user
-	const user = await User.findOne({ where: { email: req.body.email }});
+	const user = await User.findOne({ where: { email }});
 	if (user === null) { throw new NotFoundError('User'); }
 
 	// Make sure passwords match
-	if (!(await bcrypt.compare(req.body.password, user.password))) {
+	if (!(await bcrypt.compare(password, user.password))) {
 		throw new APIError('Credentials don\'t match.', 401);
 	}
 
