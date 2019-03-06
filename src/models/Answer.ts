@@ -22,8 +22,9 @@ export default class Answer extends Model<Answer> {
 	@Column(DataType.TEXT)
 	content!: string;
 
+	// Null if not graded yet
 	@Column
-	points!: number;
+	points!: number | null;
 
 	@ForeignKey(() => User)
 	@Column

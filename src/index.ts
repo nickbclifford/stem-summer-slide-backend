@@ -17,6 +17,7 @@ import { json } from 'body-parser';
 import { errorHandler, jwtHandler } from './utils/middleware';
 
 // Routers
+import answerRouter from './routes/answer';
 import authRouter from './routes/auth';
 import questionRouter from './routes/question';
 import unitRouter from './routes/unit';
@@ -33,6 +34,7 @@ sequelize.sync({ force: config.forceModelSync }).then(() => {
 	app.use(jwtHandler);
 
 	// Child routers
+	app.use('/answer', answerRouter);
 	app.use('/auth', authRouter);
 	app.use('/question', questionRouter);
 	app.use('/unit', unitRouter);
