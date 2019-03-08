@@ -23,7 +23,7 @@ export default class Answer extends Model<Answer> {
 	content!: string;
 
 	// Null if not graded yet
-	@Column
+	@Column(DataType.FLOAT)
 	points!: number | null;
 
 	@ForeignKey(() => User)
