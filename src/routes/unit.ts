@@ -12,10 +12,19 @@ router.get('/:id', asyncHandler(async (req, res) => {
 	const id = parseInt(req.params.id, 10);
 	if (isNaN(id)) { throw new InvalidParameterError('unit ID'); }
 
-	const unit = Unit.findById(id, { include: [Question] });
+	const unit = await Unit.findById(id, { include: [Question] });
 	if (unit === null) { throw new NotFoundError('Unit'); }
 
-	success(res, unit.toJSON());
+	const unitData = unit.toJSON();
+
+	for (const question of unitData.questions) {
+		// Don't show correct answer unless requested by an admin
+		if (!(req.authorized && req.authorized.admin)) {
+			delete question.correctAnswer;
+		}
+	}
+
+	success(res, unitData);
 }));
 
 router.put('/:id', requireAdmin, asyncHandler(async (req, res) => {

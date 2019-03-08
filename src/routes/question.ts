@@ -51,7 +51,14 @@ router.get('/:id', asyncHandler(async (req, res) => {
 	const question = await Question.findById(id, options);
 	if (question === null) { throw new NotFoundError('Question'); }
 
-	success(res, question.toJSON());
+	const questionData = question.toJSON();
+
+	// Don't show correct answer unless requested by an admin
+	if (!(req.authorized && req.authorized.admin)) {
+		delete questionData.correctAnswer;
+	}
+
+	success(res, questionData);
 }));
 
 router.patch('/:id', requireAdmin, asyncHandler(async (req, res) => {
