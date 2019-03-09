@@ -14,6 +14,7 @@ import express from 'express';
 
 // Middleware
 import { json } from 'body-parser';
+import cors from 'cors';
 import { errorHandler, jwtHandler } from './utils/middleware';
 
 // Routers
@@ -30,6 +31,7 @@ sequelize.sync({ force: config.forceModelSync }).then(() => {
 	const app = express();
 
 	// Middleware
+	app.use(cors());
 	app.use(json());
 	app.use(jwtHandler);
 
