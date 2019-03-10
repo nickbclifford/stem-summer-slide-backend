@@ -8,6 +8,12 @@ import { isNonEmptyString } from '../utils/validators';
 
 const router = Router();
 
+router.get('/', asyncHandler(async (req, res) => {
+	const units = await Unit.findAll();
+
+	success(res, units.map(u => u.toJSON()));
+}));
+
 router.get('/:id', asyncHandler(async (req, res) => {
 	const id = parseInt(req.params.id, 10);
 	if (isNaN(id)) { throw new InvalidParameterError('unit ID'); }
