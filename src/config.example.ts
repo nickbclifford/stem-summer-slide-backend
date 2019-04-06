@@ -17,5 +17,6 @@ export default {
 			password: ''
 		}
 	},
-	jwtSecret: ''
+	jwtSecret: '',
+	hostedOn: 'http://localhost:2400'
 };

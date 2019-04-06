@@ -18,7 +18,7 @@ export default class Answer extends Model<Answer> {
 	@Column
 	id!: number;
 
-	// If it's an image submission, this is a URL
+	// If it's an image submission, this is a space-delimited list of URLs
 	@Column(DataType.TEXT)
 	content!: string;
 

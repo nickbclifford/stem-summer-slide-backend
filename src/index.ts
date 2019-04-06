@@ -42,6 +42,9 @@ sequelize.sync({ force: config.forceModelSync }).then(() => {
 	app.use('/unit', unitRouter);
 	app.use('/user', userRouter);
 
+	// Static uploads
+	app.use('/uploads', express.static(__dirname + '/../uploads'));
+
 	// Error handler (must be last in the chain!)
 	app.use(errorHandler);
 
