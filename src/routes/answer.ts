@@ -4,7 +4,7 @@ import config from '../config';
 import Answer from '../models/Answer';
 import Question, { AnswerFormat } from '../models/Question';
 import { APIError, InvalidParameterError, NotFoundError, UnauthorizedError } from '../utils/errors';
-import { asyncHandler, requireLoggedIn } from '../utils/middleware';
+import { asyncHandler, requireAdmin, requireLoggedIn } from '../utils/middleware';
 import { success } from '../utils/responses';
 import { isNonEmptyString } from '../utils/validators';
 
@@ -101,6 +101,22 @@ router.post('/image', requireLoggedIn, upload.array('images'), asyncHandler(asyn
 	await answer.save();
 
 	success(res, { id: answer.id });
+}));
+
+router.post('/grade', requireAdmin, asyncHandler(async (req, res) => {
+	const id = req.body.id;
+	if (typeof id !== 'number') { throw new InvalidParameterError('answer ID'); }
+
+	const answer = await Answer.findById(id);
+	if (answer === null) { throw new NotFoundError('Answer'); }
+
+	const points = req.body.points;
+	if (typeof points !== 'number') { throw new InvalidParameterError('points'); }
+
+	answer.points = points;
+	await answer.save();
+
+	success(res);
 }));
 
 router.get('/:id', requireLoggedIn, asyncHandler(async (req, res) => {
