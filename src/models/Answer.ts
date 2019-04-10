@@ -1,7 +1,7 @@
 import {
 	AutoIncrement,
 	BelongsTo,
-	Column,
+	Column, CreatedAt,
 	DataType,
 	ForeignKey,
 	Model,
@@ -11,7 +11,7 @@ import {
 import Question from './Question';
 import User from './User';
 
-@Table
+@Table({ updatedAt: false })
 export default class Answer extends Model<Answer> {
 	@PrimaryKey
 	@AutoIncrement
@@ -39,4 +39,7 @@ export default class Answer extends Model<Answer> {
 
 	@BelongsTo(() => Question)
 	question!: Question;
+
+	@CreatedAt
+	submittedAt!: Date;
 }

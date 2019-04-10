@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import { IIncludeOptions } from 'sequelize-typescript';
 import Answer from '../models/Answer';
 import Question, { AnswerFormat, QuestionType } from '../models/Question';
 import { APIError, InvalidParameterError, NotFoundError } from '../utils/errors';
@@ -42,16 +43,31 @@ router.get('/:id', asyncHandler(async (req, res) => {
 	const id = parseInt(req.params.id, 10);
 	if (isNaN(id)) { throw new InvalidParameterError('question ID'); }
 
-	// Only include answers if requested by an admin
-	let options;
-	if (req.authorized && req.authorized.admin) {
-		options = { include: [Answer] };
+	let options: IIncludeOptions = {};
+	if (req.authorized) {
+		if (req.authorized.admin) {
+			// Get everybody's answers
+			options = { include: [Answer] };
+		} else {
+			// Only get the user's past answers
+			options = {
+				include: [{
+					model: Answer,
+					where: { userId: req.authorized.user }
+				}]
+			};
+		}
 	}
 
 	const question = await Question.findById(id, options);
 	if (question === null) { throw new NotFoundError('Question'); }
 
 	const questionData = question.toJSON();
+
+	if (!req.authorized) {
+		// By default, return an empty array if unprivileged
+		questionData.answers = [];
+	}
 
 	// Don't show correct answer unless requested by an admin
 	if (!(req.authorized && req.authorized.admin)) {

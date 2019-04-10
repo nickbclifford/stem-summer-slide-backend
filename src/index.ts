@@ -24,7 +24,12 @@ import questionRouter from './routes/question';
 import unitRouter from './routes/unit';
 import userRouter from './routes/user';
 
-sequelize.sync({ force: config.forceModelSync }).then(() => {
+(async () => {
+	if (typeof config.forceModelSync === 'string') {
+		await sequelize.model(config.forceModelSync).sync({ force: true });
+	}
+	await sequelize.sync();
+
 	console.log('models synced!');
 
 	// Initialize Express
@@ -51,4 +56,4 @@ sequelize.sync({ force: config.forceModelSync }).then(() => {
 	app.listen(config.port, () => {
 		console.log(`Server listening on *:${config.port}`);
 	});
-});
+})();

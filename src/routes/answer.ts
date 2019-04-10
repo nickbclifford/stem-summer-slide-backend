@@ -43,7 +43,6 @@ router.post('/', requireLoggedIn, asyncHandler(async (req, res) => {
 	const content = req.body.content;
 	if (!isNonEmptyString(content)) { throw new InvalidParameterError('content'); }
 	const questionId = req.body.questionId;
-	// noinspection SuspiciousTypeOfGuard
 	if (typeof questionId !== 'number') { throw new InvalidParameterError('question ID'); }
 
 	const question = await Question.findById(questionId);
