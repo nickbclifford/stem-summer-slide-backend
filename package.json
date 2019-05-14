@@ -28,7 +28,7 @@
     "@types/node": "^10.12.10",
     "@types/nodemailer": "^4.6.5",
     "tslint": "^5.11.0",
-    "typescript": "^3.3.3333"
+    "typescript": "^3.4.5"
   },
   "dependencies": {
     "@types/cors": "^2.8.4",
