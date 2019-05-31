@@ -86,51 +86,49 @@ router.get('/:id', asyncHandler(async (req, res) => {
 	success(res, questionData);
 }));
 
-router.put('/:id', requireAdmin, asyncHandler(async (req, res) => {
+router.patch('/:id', requireAdmin, asyncHandler(async (req, res) => {
 	const id = parseInt(req.params.id, 10);
 	if (isNaN(id)) { throw new InvalidParameterError('question ID'); }
 
-	const body = req.body.body;
-	if (typeof body !== 'undefined') {
-		if (!isNonEmptyString(body)) { throw new InvalidParameterError('body'); }
-	}
-
-	const questionType = req.body.questionType;
-	if (typeof questionType !== 'undefined') {
-		if (!isStringEnumMember(QuestionType, questionType)) { throw new InvalidParameterError('question type'); }
-	}
-
-	const answerFormat = req.body.answerFormat;
-	if (typeof answerFormat !== 'undefined') {
-		if (!isStringEnumMember(AnswerFormat, answerFormat)) { throw new InvalidParameterError('answer format'); }
-	}
+	const question = await Question.findById(id);
+	if (question === null) { throw new NotFoundError('Question'); }
 
 	const unitId = req.body.unitId;
-	if (typeof unitId !== 'undefined') {
-		if (typeof unitId !== 'number') { throw new InvalidParameterError('unit ID'); }
-	}
+	if (typeof unitId !== 'number') { throw new InvalidParameterError('unit ID'); }
+	const unit = await Unit.findById(unitId, { include: [Question] });
+	if (unit === null) { throw new NotFoundError('Unit'); }
+	question.unitId = unitId;
 
+	const body = req.body.body;
+	const questionType = req.body.questionType;
+	const answerFormat = req.body.answerFormat;
 	const maxPoints = req.body.maxPoints;
+	const correctAnswer = req.body.correctAnswer as number || null;
+
+	if (typeof body !== 'undefined') {
+		if (!isNonEmptyString(body)) { throw new InvalidParameterError('body'); }
+		question.body = body;
+	}
+	if (typeof questionType !== 'undefined') {
+		if (!isStringEnumMember(QuestionType, questionType)) { throw new InvalidParameterError('question type'); }
+		question.questionType = questionType;
+	}
+	if (typeof answerFormat !== 'undefined') {
+		if (!isStringEnumMember(AnswerFormat, answerFormat)) { throw new InvalidParameterError('answer format'); }
+		question.answerFormat = answerFormat;
+	}
 	if (typeof maxPoints !== 'undefined') {
 		if (typeof maxPoints !== 'number') { throw new InvalidParameterError('max points'); }
+		question.maxPoints = maxPoints;
 	}
-
-	const correctAnswer = req.body.correctAnswer as number || null;
 	if (typeof req.body.correctAnswer !== 'undefined') {
 		if (answerFormat === AnswerFormat.NUMERICAL && typeof correctAnswer !== 'number') {
 			throw new APIError('Numerical questions require a correct answer.', 400);
 		}
+		question.correctAnswer = correctAnswer;
 	}
 
-	await Question.upsert({
-		id,
-		body,
-		questionType,
-		answerFormat,
-		unitId,
-		maxPoints,
-		correctAnswer
-	});
+	await question.save();
 
 	success(res);
 }));
